@@ -1,8 +1,11 @@
 #include <iostream>
 
-#include "../src/hello.h"
+#include "../src/core.h"
+
 
 int main()
 {
-    hello::run();
+    jade::Config cfg;
+    jade::init(cfg);
+    jade::run();
 }
