@@ -1,0 +1,12 @@
+file(GLOB SRC_FILES *.cpp)
+add_library(jade ${SRC_FILES})
+
+target_include_directories(jade PUBLIC 
+    ${CMAKE_SOURCE_DIR}/external/freetype/include/
+    ${CMAKE_SOURCE_DIR}/external/glfw/include/
+    ${CMAKE_SOURCE_DIR}/external/glad/include/
+)
+
+target_link_libraries(jade 
+    PRIVATE opengl32 glad glfw freetype
+)
