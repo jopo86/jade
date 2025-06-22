@@ -4,6 +4,7 @@
 #include "color.h"
 
 #include <iostream>
+#include <vector>
 #include <functional>
 
 #include <glad/glad.h>
@@ -32,10 +33,16 @@ namespace jade {
         std::function<void(double x, double y)> on_mouse_moved, on_scroll;
     };
 
+    struct Malloc {
+        void* ptr;
+        bool is_arr;
+    };
+
     struct Context {
         Config cfg;
         Callbacks cbs;
         GLFWwindow* window;
+        std::vector<Malloc> mallocs;
     };
     inline Context context;
 
@@ -45,6 +52,7 @@ namespace jade {
     Result init(const Config& cfg, const Callbacks& cbs);
     void run();
     void terminate();
+    void cleanup();
 
     void set_callbacks(const Callbacks& cbs);
     void set_error_callback(std::function<void(std::string msg)> cb);

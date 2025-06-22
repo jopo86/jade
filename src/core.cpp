@@ -1,14 +1,22 @@
 #include "core.h"
 
 namespace jade {
-    void err(std::string msg) {
+    void err(const std::string& msg) {
         if (context.cbs.on_err) context.cbs.on_err(msg);
         else std::cerr << "ERR: " << msg << std::endl;
     }
 
-    void warn(std::string msg) {
+    void warn(const std::string& msg) {
         if (context.cbs.on_warn) context.cbs.on_warn(msg);
         else std::cerr << "WARN: " << msg << std::endl;
+    }
+
+    void add_malloc(void* ptr, bool is_arr) {
+        context.mallocs.push_back(Malloc{ ptr, is_arr });
+    }
+
+    void framebuffer_size_callback(GLFWwindow* ptr, int width, int height) {
+        glViewport(0, 0, width, height);
     }
 
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -71,6 +79,7 @@ jade::Result jade::init(const Config& cfg, const Callbacks& cbs) {
     }
     glfwMakeContextCurrent(context.window);
 
+    glfwSetFramebufferSizeCallback(context.window, framebuffer_size_callback);
     glfwSetKeyCallback(context.window, key_callback);
     glfwSetCharCallback(context.window, char_callback);
     glfwSetMouseButtonCallback(context.window, mouse_btn_callback);
@@ -118,13 +127,19 @@ void jade::run() {
             while (glfwGetTime() - t1 < (1.0 / context.cfg.fps)) {}
         }
     }
-
-    glfwDestroyWindow(context.window);
-    glfwTerminate();
 }
 
 void jade::terminate() {
     glfwSetWindowShouldClose(context.window, true);
+}
+
+void jade::cleanup() {
+    glfwDestroyWindow(context.window);
+    glfwTerminate();
+    for (Malloc& malloc : context.mallocs) {
+        if (malloc.is_arr) delete[] malloc.ptr;
+        else delete malloc.ptr;
+    }
 }
 
 void jade::set_callbacks(const Callbacks& cbs) {

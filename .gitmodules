@@ -4,3 +4,9 @@
 [submodule "external/freetype"]
 	path = external/freetype
 	url = https://github.com/freetype/freetype.git
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "external/stb"]
+	path = external/stb
+	url = https://github.com/nothings/stb.git
