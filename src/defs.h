@@ -2,6 +2,10 @@
 
 namespace jade {
 
+    struct Pos {
+        float x, y;
+    };
+
     enum class InputAction {
         Null = -1,
         Release = 0,

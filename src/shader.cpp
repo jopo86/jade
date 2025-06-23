@@ -2,13 +2,16 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-namespace jade {
+namespace jade::hidden {
     void err(const std::string&);
-}
+    void assert_initialized(const std::string&);
+} using jade::hidden::err, jade::hidden::assert_initialized;
 
 jade::Shader::Shader() : prog(0) {}
 
 jade::Shader::Shader(const std::string& vert_src, const std::string& frag_src) {
+    assert_initialized("jade::Shader::Shader()");
+    
     unsigned int vert = glCreateShader(GL_VERTEX_SHADER);
 	unsigned int frag = glCreateShader(GL_FRAGMENT_SHADER);
 

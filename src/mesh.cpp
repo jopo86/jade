@@ -1,19 +1,20 @@
 #include "mesh.h"
 
-
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include <iostream>
 
-namespace jade {
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+
+namespace jade::hidden {
     void add_malloc(void*, bool);
-}
+    void assert_initialized(const std::string&);
+} using jade::hidden::add_malloc, jade::hidden::assert_initialized;
 
 jade::Mesh::Mesh() : vao(0), vbo(0), ibo(0), indexed(false), index_ct(0)  {}
 
 jade::Mesh::Mesh(GLfloat* vertices, GLsizei vertices_size, MeshFormat fmt) : ibo(0), indexed(false) {
-
+    assert_initialized("jade::Mesh::Mesh()");
+    
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
 
@@ -80,7 +81,7 @@ void jade::Mesh::draw() {
 }
 
 jade::Mesh jade::Mesh::triangle(float l, bool t) {
-    return triangle(l, sqrtf(l*l - l/2*l/2), t);
+    return triangle(l, glm::sqrt(l*l - l/2*l/2), t);
 }
 
 jade::Mesh jade::Mesh::triangle(float b, float h, bool t) {
@@ -138,9 +139,9 @@ jade::Mesh jade::Mesh::circle(float r, int n, bool t) {
         float* vertices = new float[n * 2 + 2];
         vertices[0] = vertices[1] = 0.0f;
         for (int i = 2; i < n * 2 + 2; i += 2) {
-            float a = 2 * M_PI / n * (i - 2) / 2;
-            vertices[i + 0] = r * cosf(a);
-            vertices[i + 1] = r * sinf(a);
+            float a = glm::two_pi<float>() / n * (i - 2) / 2;
+            vertices[i + 0] = r * glm::cos(a);
+            vertices[i + 1] = r * glm::sin(a);
         }
         unsigned int* indices = new unsigned int[n * 3];
         for (int i = 0, j = 1; i < n * 3; i += 3, j++) {
@@ -156,9 +157,9 @@ jade::Mesh jade::Mesh::circle(float r, int n, bool t) {
         vertices[0] = vertices[1] = 0.0f;
         vertices[2] = vertices[3] = 0.5f;
         for (int i = 4; i < n * 4 + 4; i += 4) {
-            float a = 2 * M_PI / n * (i - 4) / 4;
-            vertices[i + 0] = r * cosf(a);
-            vertices[i + 1] = r * sinf(a);
+            float a = glm::two_pi<float>() / n * (i - 4) / 4;
+            vertices[i + 0] = r * glm::cos(a);
+            vertices[i + 1] = r * glm::sin(a);
             vertices[i + 2] = vertices[i + 0] / 2.0f + 0.5f;
             vertices[i + 3] = vertices[i + 1] / 2.0f + 0.5f;
         }

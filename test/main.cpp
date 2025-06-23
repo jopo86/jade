@@ -1,39 +1,29 @@
 #include <iostream>
 
-#include "../src/core.h"
+#include "../src/jade.h"
 #include "../src/sprite.h"
+
+const float CAM_SPEED = 500.0f;
 
 int main()
 {
-    jade::Config cfg;
-    cfg.width = 800;
-    cfg.height = 600;
-    cfg.title = "Jade Test Application";
-    cfg.background = jade::Color::teal();
-
-    jade::Callbacks cbs;
-    cbs.on_update = [](double dt) {
-        std::cout << "FPS: " << (1.0 / dt) << std::endl;
-    };
-    cbs.on_key = [](jade::Key key, jade::InputAction action) {
-        if (action != jade::InputAction::Press) return;
-        if (key == jade::Key::Esc) {
-            jade::terminate();
-        } else if (key == jade::Key::Num1) {
-            jade::set_wireframe(true);
-        }
-    };
-
-    jade::init(cfg);
+    jade::core::init();
 
     jade::Sprite smiley("../test/assets/smiley.jpg");
-    smiley.translate(0.0f, 0.0f, -1.0f);
 
+    jade::Callbacks cbs;
     cbs.on_draw = [&smiley]() {
         smiley.draw();
     };
+    cbs.on_update = [](double dt) {
+        if (jade::input::is_key_down(jade::Key::W)) jade::camera::translate(0.0f, CAM_SPEED * dt);
+        if (jade::input::is_key_down(jade::Key::A)) jade::camera::translate(-CAM_SPEED * dt, 0.0f);
+        if (jade::input::is_key_down(jade::Key::S)) jade::camera::translate(0.0f, -CAM_SPEED * dt);
+        if (jade::input::is_key_down(jade::Key::D)) jade::camera::translate(CAM_SPEED * dt, 0.0f);
+        if (jade::input::is_key_down(jade::Key::Esc)) jade::core::terminate();
+    };
 
-    jade::set_callbacks(cbs);
-    jade::run();
-    jade::cleanup();
+    jade::core::set_callbacks(cbs);
+    jade::core::run();
+    jade::core::cleanup();
 }

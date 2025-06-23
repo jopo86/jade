@@ -1,12 +1,18 @@
 #include "sprite.h"
 
-#include "core.h"
+#include "jade.h"
+
+namespace jade::hidden {
+    void assert_initialized(const std::string&);
+} using jade::hidden::assert_initialized;
 
 jade::Sprite::Sprite() {
     model = glm::mat4(1.0f);
 }
 
 jade::Sprite::Sprite(const std::string& path) {
+    assert_initialized("jade::Sprite::Sprite()");
+    
     model = glm::mat4(1.0f);
     tex = Texture(path);
     mesh = Mesh::quad(tex.width, tex.height, true);

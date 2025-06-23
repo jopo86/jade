@@ -3,13 +3,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-namespace jade {
+namespace jade::hidden {
     void err(const std::string&);
-}
+    void assert_initialized(const std::string&);
+} using jade::hidden::err, jade::hidden::assert_initialized;
 
 jade::Texture::Texture() : tex(0) {}
 
 jade::Texture::Texture(const std::string& filepath) {
+    assert_initialized("jade::Texture::Texture()");
+    
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
 
