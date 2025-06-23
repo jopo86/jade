@@ -2,6 +2,7 @@
 
 #include "defs.h"
 #include "color.h"
+#include "shader.h"
 
 #include <iostream>
 #include <vector>
@@ -9,6 +10,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 namespace jade {
 
@@ -23,8 +25,8 @@ namespace jade {
     };
 
     struct Callbacks {
-        std::function<void(std::string msg)> on_err;
-        std::function<void(std::string msg)> on_warn;
+        std::function<void(const std::string& msg)> on_err;
+        std::function<void(const std::string& msg)> on_warn;
         std::function<void(double dt)> on_update;
         std::function<void()> on_draw;
         std::function<void(Key key, InputAction action)> on_key;
@@ -42,21 +44,23 @@ namespace jade {
         Config cfg;
         Callbacks cbs;
         GLFWwindow* window;
+        glm::mat4 view, proj;
+        Shader sprite_shader, shape_shader, text_shader;
         std::vector<Malloc> mallocs;
     };
     inline Context context;
 
-    Result init();
-    Result init(const Config& cfg);
-    Result init(const Callbacks& cbs);
-    Result init(const Config& cfg, const Callbacks& cbs);
+    void init();
+    void init(const Config& cfg);
+    void init(const Callbacks& cbs);
+    void init(const Config& cfg, const Callbacks& cbs);
     void run();
     void terminate();
     void cleanup();
 
     void set_callbacks(const Callbacks& cbs);
-    void set_error_callback(std::function<void(std::string msg)> cb);
-    void set_warn_callback(std::function<void(std::string msg)> cb);
+    void set_error_callback(std::function<void(const std::string& msg)> cb);
+    void set_warn_callback(std::function<void(const std::string& msg)> cb);
     void set_update_callback(std::function<void(double dt)> cb);
     void set_draw_callback(std::function<void()> cb);
     void set_key_callback(std::function<void(Key key, InputAction action)> cb);
@@ -65,5 +69,6 @@ namespace jade {
     void set_mouse_moved_callback(std::function<void(double x, double y)> cb);
     void set_scroll_callback(std::function<void(double x, double y)> cb);
 
-
+    void set_wireframe(bool wf);
+    void set_draw_color(const Color& draw_color);
 }

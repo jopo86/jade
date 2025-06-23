@@ -1,7 +1,11 @@
+#pragma once
+
 #include <string>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+
+#include "color.h"
 
 namespace jade {
     class Shader {
@@ -15,9 +19,11 @@ namespace jade {
 
         void set_vec3(const std::string& name, const glm::vec3& val);
         void set_vec4(const std::string& name, const glm::vec4& val);
+        void set_color(const std::string& name, const Color& val);
         void set_mat4(const std::string& name, const glm::mat4& val);
 
-        
+        static Shader colored();
+        static Shader textured();
 
     };
 }

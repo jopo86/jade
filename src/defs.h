@@ -2,13 +2,6 @@
 
 namespace jade {
 
-    enum class Result {
-        Success,
-        FailedInitGLFW,
-        FailedCreateWindow,
-        FailedInitGlad,
-    };
-
     enum class InputAction {
         Null = -1,
         Release = 0,

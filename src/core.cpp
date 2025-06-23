@@ -1,5 +1,7 @@
 #include "core.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 namespace jade {
     void err(const std::string& msg) {
         if (context.cbs.on_err) context.cbs.on_err(msg);
@@ -40,25 +42,25 @@ namespace jade {
     }
 }
 
-jade::Result jade::init() {
+void jade::init() {
     return init(context.cfg, context.cbs);
 }
 
-jade::Result jade::init(const Config& cfg) {
+void jade::init(const Config& cfg) {
     return init(cfg, context.cbs);
 }
 
-jade::Result jade::init(const Callbacks& cbs) {
+void jade::init(const Callbacks& cbs) {
     return init(context.cfg, cbs);
 }
 
-jade::Result jade::init(const Config& cfg, const Callbacks& cbs) {
+void jade::init(const Config& cfg, const Callbacks& cbs) {
     context.cfg = cfg;
     context.cbs = cbs;
     
     if (!glfwInit()) {
         err("jade::init(): failed to initialize GLFW");
-        return Result::FailedInitGLFW;
+        return;
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -75,7 +77,7 @@ jade::Result jade::init(const Config& cfg, const Callbacks& cbs) {
     context.window = glfwCreateWindow(cfg.width, cfg.height, cfg.title.c_str(), nullptr, nullptr);
     if (!context.window) {
         err("jade::init(): failed to create window");
-        return Result::FailedCreateWindow;
+        return;
     }
     glfwMakeContextCurrent(context.window);
 
@@ -90,7 +92,7 @@ jade::Result jade::init(const Config& cfg, const Callbacks& cbs) {
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         err("jade::init(): failed to initialize Glad");
-        return Result::FailedInitGlad;
+        return;
     }
 
     int fb_width = 0, fb_height = 0;
@@ -99,8 +101,23 @@ jade::Result jade::init(const Config& cfg, const Callbacks& cbs) {
 
     context.cfg.anti_alias ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    return Result::Success;
+    context.sprite_shader = Shader::textured();
+    context.shape_shader = Shader::colored();
+    // context.text_shader = Shader::text();
+
+    context.view = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    context.proj = glm::ortho(0, fb_width, 0, fb_height);
+    context.sprite_shader.use();
+    context.sprite_shader.set_mat4("u_view", context.view);
+    context.sprite_shader.set_mat4("u_proj", context.proj);
+    context.shape_shader.use();
+    context.shape_shader.set_mat4("u_view", context.view);
+    context.shape_shader.set_mat4("u_proj", context.proj);
+
+    return;
 }
 
 void jade::run() {
@@ -146,11 +163,11 @@ void jade::set_callbacks(const Callbacks& cbs) {
     context.cbs = cbs;
 }
 
-void jade::set_error_callback(std::function<void(std::string msg)> cb) {
+void jade::set_error_callback(std::function<void(const std::string& msg)> cb) {
     context.cbs.on_err = cb;
 }
 
-void jade::set_warn_callback(std::function<void(std::string msg)> cb) {
+void jade::set_warn_callback(std::function<void(const std::string& msg)> cb) {
     context.cbs.on_warn = cb;
 }
 
@@ -180,4 +197,15 @@ void jade::set_mouse_moved_callback(std::function<void(double x, double y)> cb) 
 
 void jade::set_scroll_callback(std::function<void(double x, double y)> cb) {
     context.cbs.on_scroll = cb;
+}
+
+void jade::set_wireframe(bool wf) {
+    glPolygonMode(GL_FRONT_AND_BACK, wf ? GL_LINE : GL_FILL);
+}
+
+void jade::set_draw_color(const Color& col) {
+    context.shape_shader.use();
+    context.shape_shader.set_color("u_col", col);
+    context.text_shader.use();
+    context.text_shader.set_color("u_col", col);
 }

@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "../src/core.h"
-#include "../src/mesh.h"
+#include "../src/sprite.h"
 
 int main()
 {
@@ -16,17 +16,21 @@ int main()
         std::cout << "FPS: " << (1.0 / dt) << std::endl;
     };
     cbs.on_key = [](jade::Key key, jade::InputAction action) {
-        if (key == jade::Key::Esc && action == jade::InputAction::Press) {
+        if (action != jade::InputAction::Press) return;
+        if (key == jade::Key::Esc) {
             jade::terminate();
+        } else if (key == jade::Key::Num1) {
+            jade::set_wireframe(true);
         }
     };
 
     jade::init(cfg);
 
-    jade::Mesh mesh = jade::Mesh::square(1.0f, false);
+    jade::Sprite smiley("../test/assets/smiley.jpg");
+    smiley.translate(0.0f, 0.0f, -1.0f);
 
-    cbs.on_draw = [&mesh]() {
-        mesh.draw();
+    cbs.on_draw = [&smiley]() {
+        smiley.draw();
     };
 
     jade::set_callbacks(cbs);
