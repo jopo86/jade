@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace jade {
+namespace jade::draw {
     class Drawable {
     public:
         virtual void draw() = 0;
@@ -12,6 +12,7 @@ namespace jade {
         void scale(float factor);
         void scale(float x_factor, float y_factor);
     
+        virtual ~Drawable() = default;
     protected:
         glm::mat4 model;
     };

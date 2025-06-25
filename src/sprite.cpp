@@ -1,26 +1,32 @@
 #include "sprite.h"
 
-#include "jade.h"
+#include "internal.h"
 
 namespace jade::hidden {
     void assert_initialized(const std::string&);
 } using jade::hidden::assert_initialized;
 
-jade::Sprite::Sprite() {
-    model = glm::mat4(1.0f);
-}
+using jade::backend::Mesh, jade::backend::Texture;
+using jade::internal::context;
 
-jade::Sprite::Sprite(const std::string& path) {
-    assert_initialized("jade::Sprite::Sprite()");
+namespace jade::draw {
     
-    model = glm::mat4(1.0f);
-    tex = Texture(path);
-    mesh = Mesh::quad(tex.width, tex.height, true);
-}
+    Sprite::Sprite() {
+        model = glm::mat4(1.0f);
+    }
 
-void jade::Sprite::draw() {
-    context.sprite_shader.use();
-    context.sprite_shader.set_mat4("u_model", model);
-    tex.bind();
-    mesh.draw();
+    Sprite::Sprite(const std::string& path) {
+        assert_initialized("jade::draw::Sprite::Sprite()");
+        
+        model = glm::mat4(1.0f);
+        tex = Texture(path);
+        mesh = Mesh::quad(tex.width, tex.height, true);
+    }
+
+    void Sprite::draw() {
+        context.sprite_shader.use();
+        context.sprite_shader.set_mat4("u_model", model);
+        tex.bind();
+        mesh.draw();
+    }
 }

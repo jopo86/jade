@@ -7,7 +7,7 @@
 
 #include "color.h"
 
-namespace jade {
+namespace jade::backend {
     class Shader {
     public:
         GLuint prog;
@@ -19,7 +19,7 @@ namespace jade {
 
         void set_vec3(const std::string& name, const glm::vec3& val);
         void set_vec4(const std::string& name, const glm::vec4& val);
-        void set_color(const std::string& name, const Color& val);
+        void set_color(const std::string& name, const core::Color& val);
         void set_mat4(const std::string& name, const glm::mat4& val);
 
         static Shader colored();

@@ -1,8 +1,13 @@
+#include <iostream>
+
 #include "jade.h"
+#include "internal.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
-using jade::context;
+using namespace jade::internal;
+using jade::input::Key, jade::input::MouseButton, jade::input::Action;
+using jade::backend::Shader, jade::backend::Camera;
 
 namespace jade::hidden {
     void err(const std::string& msg) {
@@ -15,11 +20,7 @@ namespace jade::hidden {
         else std::cerr << "WARN: " << msg << std::endl;
     }
 
-    void add_malloc(void* ptr, bool is_arr) {
-        context.mallocs.push_back(Malloc{ ptr, is_arr });
-    }
-
-    void framebuffer_size_callback(GLFWwindow* ptr, int width, int height) {
+    void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
         context.cam.resize(width, height);
         context.sprite_shader.use();
@@ -31,7 +32,7 @@ namespace jade::hidden {
     }
 
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-        if (context.cbs.on_key) context.cbs.on_key((Key)key, (InputAction)action);
+        if (context.cbs.on_key) context.cbs.on_key((Key)key, (Action)action);
     }
 
     void char_callback(GLFWwindow* window, unsigned int codepoint) {
@@ -39,7 +40,7 @@ namespace jade::hidden {
     }
 
     void mouse_btn_callback(GLFWwindow* window, int btn, int action, int mods) {
-        if (context.cbs.on_mouse_button) context.cbs.on_mouse_button((MouseButton)btn, (InputAction)action);
+        if (context.cbs.on_mouse_button) context.cbs.on_mouse_button((MouseButton)btn, (Action)action);
     }
 
     void cursor_pos_callback(GLFWwindow* window, double x, double y) {
@@ -56,222 +57,241 @@ namespace jade::hidden {
             exit(1);
         }
     }
-}
-using namespace jade::hidden;
+} using namespace jade::hidden;
 
-void jade::core::init() {
-    init(context.cfg, context.cbs);
-}
+namespace jade::core {
 
-void jade::core::init(const Config& cfg) {
-    init(cfg, context.cbs);
-}
-
-void jade::core::init(const Callbacks& cbs) {
-    init(context.cfg, cbs);
-}
-
-void jade::core::init(const Config& cfg, const Callbacks& cbs) {
-    context.cfg = cfg;
-    context.cbs = cbs;
-    
-    if (!glfwInit()) {
-        hidden::err("jade::core::init(): failed to initialize GLFW");
-        return;
+    void init() {
+        init(context.cfg, context.cbs);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef APPLE
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-
-    glfwWindowHint(GLFW_RESIZABLE, context.cfg.resizable ? GLFW_TRUE : GLFW_FALSE);
-    glfwWindowHint(GLFW_SAMPLES, 4);
-
-    context.window = glfwCreateWindow(cfg.width, cfg.height, cfg.title.c_str(), nullptr, nullptr);
-    if (!context.window) {
-        err("jade::core::init(): failed to create window");
-        return;
-    }
-    glfwMakeContextCurrent(context.window);
-
-    glfwSetFramebufferSizeCallback(context.window, framebuffer_size_callback);
-    glfwSetKeyCallback(context.window, key_callback);
-    glfwSetCharCallback(context.window, char_callback);
-    glfwSetMouseButtonCallback(context.window, mouse_btn_callback);
-    glfwSetCursorPosCallback(context.window, cursor_pos_callback);
-    glfwSetScrollCallback(context.window, scroll_callback);
-
-    glfwSwapInterval(context.cfg.vsync);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        err("jade::core::init(): failed to initialize Glad");
-        return;
+    void init(const Config& cfg) {
+        init(cfg, context.cbs);
     }
 
-    context.initd = true;
+    void init(const Callbacks& cbs) {
+        init(context.cfg, cbs);
+    }
 
-    int fb_width = 0, fb_height = 0;
-    glfwGetFramebufferSize(context.window, &fb_width, &fb_height);
-    glViewport(0, 0, fb_width, fb_height);
+    void init(const Config& cfg, const Callbacks& cbs) {
+        context.cfg = cfg;
+        context.cbs = cbs;
+        
+        if (!glfwInit()) {
+            hidden::err("jade::core::init(): failed to initialize GLFW");
+            return;
+        }
 
-    context.cfg.anti_alias ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    context.sprite_shader = Shader::textured();
-    context.shape_shader = Shader::colored();
-    // context.text_shader = Shader::text();
+    #ifdef APPLE
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    #endif
 
-    context.cam = Camera(fb_width, fb_height);
-    context.sprite_shader.use();
-    context.sprite_shader.set_mat4("u_view", context.cam.view);
-    context.sprite_shader.set_mat4("u_proj", context.cam.proj);
-    context.shape_shader.use();
-    context.shape_shader.set_mat4("u_view", context.cam.view);
-    context.shape_shader.set_mat4("u_proj", context.cam.proj);
-    context.text_shader.use();
-    context.text_shader.set_mat4("u_view", context.cam.view);
-    context.text_shader.set_mat4("u_proj", context.cam.proj);
+        glfwWindowHint(GLFW_RESIZABLE, context.cfg.resizable ? GLFW_TRUE : GLFW_FALSE);
+        glfwWindowHint(GLFW_SAMPLES, 4);
 
-    return;
-}
+        context.window = glfwCreateWindow(cfg.width, cfg.height, cfg.title.c_str(), nullptr, nullptr);
+        if (!context.window) {
+            err("jade::core::init(): failed to create window");
+            return;
+        }
 
-void jade::core::run() {
-    assert_initialized("jade::core::run()");
-
-    double t0 = glfwGetTime();
-    while (!glfwWindowShouldClose(context.window)) {
-        double t1 = glfwGetTime();
-        double dt = t1 - t0;
-        t0 = t1;
-
-        glfwPollEvents();
-        if (context.cbs.on_update) context.cbs.on_update(dt);
-
-        glClearColor(
-            context.cfg.background.r,
-            context.cfg.background.g,
-            context.cfg.background.b,
-            context.cfg.background.a
+        struct Monitor {
+            int x, y, width, height;
+        } monitor;
+        glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &monitor.x, &monitor.y, &monitor.width, &monitor.height);
+        glfwSetWindowPos(
+            context.window,
+            monitor.x + monitor.width / 2 - cfg.width / 2,
+            monitor.y + monitor.height / 2 - cfg.height / 2
         );
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if (context.cbs.on_draw) context.cbs.on_draw();
-        glfwSwapBuffers(context.window);
 
-        if (!context.cfg.vsync) {
-            while (glfwGetTime() - t1 < (1.0 / context.cfg.fps)) {}
+        glfwSetFramebufferSizeCallback(context.window, framebuffer_size_callback);
+        glfwSetKeyCallback(context.window, key_callback);
+        glfwSetCharCallback(context.window, char_callback);
+        glfwSetMouseButtonCallback(context.window, mouse_btn_callback);
+        glfwSetCursorPosCallback(context.window, cursor_pos_callback);
+        glfwSetScrollCallback(context.window, scroll_callback);
+
+        glfwSwapInterval(context.cfg.vsync);
+
+        glfwMakeContextCurrent(context.window);
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+            err("jade::core::init(): failed to initialize Glad");
+            return;
+        }
+
+        context.initd = true;
+
+        int fb_width = 0, fb_height = 0;
+        glfwGetFramebufferSize(context.window, &fb_width, &fb_height);
+        glViewport(0, 0, fb_width, fb_height);
+
+        context.cfg.anti_alias ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        context.sprite_shader = Shader::textured();
+        context.shape_shader = Shader::colored();
+        // context.text_shader = Shader::text();
+
+        context.cam = Camera(fb_width, fb_height);
+        context.sprite_shader.use();
+        context.sprite_shader.set_mat4("u_view", context.cam.view);
+        context.sprite_shader.set_mat4("u_proj", context.cam.proj);
+        context.shape_shader.use();
+        context.shape_shader.set_mat4("u_view", context.cam.view);
+        context.shape_shader.set_mat4("u_proj", context.cam.proj);
+        context.text_shader.use();
+        context.text_shader.set_mat4("u_view", context.cam.view);
+        context.text_shader.set_mat4("u_proj", context.cam.proj);
+
+        struct CleanupGuard {
+            ~CleanupGuard() {
+                glfwDestroyWindow(context.window);
+                glfwTerminate();
+                allocs.free();
+            }
+        } static cleanup_guard;
+
+        return;
+    }
+
+    void run() {
+        assert_initialized("jade::core::run()");
+
+        double t0 = glfwGetTime();
+        while (!glfwWindowShouldClose(context.window)) {
+            double t1 = glfwGetTime();
+            double dt = t1 - t0;
+            t0 = t1;
+
+            glfwPollEvents();
+            if (context.cbs.on_update) context.cbs.on_update(dt);
+
+            glClearColor(
+                context.cfg.background.r,
+                context.cfg.background.g,
+                context.cfg.background.b,
+                context.cfg.background.a
+            );
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            if (context.cbs.on_draw) context.cbs.on_draw();
+            glfwSwapBuffers(context.window);
+
+            if (!context.cfg.vsync) {
+                while (glfwGetTime() - t1 < (1.0 / context.cfg.fps)) {}
+            }
         }
     }
-}
 
-void jade::core::terminate() {
-    assert_initialized("jade::core::terminate()");
-    glfwSetWindowShouldClose(context.window, true);
-}
+    void terminate() {
+        assert_initialized("jade::core::terminate()");
+        glfwSetWindowShouldClose(context.window, true);
+    }
+    double get_time() {
+        assert_initialized("jade::core::get_time()");
+        return glfwGetTime();
+    }
 
-void jade::core::cleanup() {
-    assert_initialized("jade::core::cleanup()");
-    glfwDestroyWindow(context.window);
-    glfwTerminate();
-    for (Malloc& malloc : context.mallocs) {
-        if (malloc.is_arr) delete[] malloc.ptr;
-        else delete malloc.ptr;
+    void set_callbacks(const Callbacks& cbs) {
+        context.cbs = cbs;
+    }
+
+    void set_error_callback(std::function<void(const std::string& msg)> cb) {
+        context.cbs.on_err = cb;
+    }
+
+    void set_warn_callback(std::function<void(const std::string& msg)> cb) {
+        context.cbs.on_warn = cb;
+    }
+
+    void set_update_callback(std::function<void(double dt)> cb) {
+        context.cbs.on_update = cb;
+    }
+
+    void set_draw_callback(std::function<void()> cb) {
+        context.cbs.on_draw = cb;
+    }
+
+    void set_key_callback(std::function<void(Key key, Action action)> cb) {
+        context.cbs.on_key = cb;
+    }
+
+    void set_char_callback(std::function<void(char c)> cb) {
+        context.cbs.on_char = cb;
+    }
+
+    void set_mouse_button_callback(std::function<void(MouseButton btn, Action action)> cb) {
+        context.cbs.on_mouse_button = cb;
+    }
+
+    void set_mouse_moved_callback(std::function<void(double x, double y)> cb) {
+        context.cbs.on_mouse_moved = cb;
+    }
+
+    void set_scroll_callback(std::function<void(double x, double y)> cb) {
+        context.cbs.on_scroll = cb;
     }
 }
 
-void jade::core::set_callbacks(const Callbacks& cbs) {
-    context.cbs = cbs;
+namespace jade::input {
+    bool is_key_down(Key key) {
+        assert_initialized("jade::input::is_key_down()");
+        return glfwGetKey(context.window, (int)key) == GLFW_PRESS;
+    }
+
+    bool is_mouse_button_down(MouseButton mb) {
+        assert_initialized("jade::input::is_mouse_button_down()");
+        return glfwGetMouseButton(context.window, (int)mb) == GLFW_PRESS;
+    }
+
+    double get_mouse_x() {
+        assert_initialized("jade::input::get_mouse_x()");
+        double x;
+        glfwGetCursorPos(context.window, &x, nullptr);
+        return x;
+    }
+
+    double get_mouse_y() {
+        assert_initialized("jade::input::get_mouse_y()");
+        double y;
+        glfwGetCursorPos(context.window, nullptr, &y);
+        return y;
+    }
 }
 
-void jade::core::set_error_callback(std::function<void(const std::string& msg)> cb) {
-    context.cbs.on_err = cb;
+namespace jade::draw {
+    void set_wireframe(bool wf) {
+        assert_initialized("jade::draw::set_wireframe()");
+        glPolygonMode(GL_FRONT_AND_BACK, wf ? GL_LINE : GL_FILL);
+    }
 }
 
-void jade::core::set_warn_callback(std::function<void(const std::string& msg)> cb) {
-    context.cbs.on_warn = cb;
-}
+namespace jade::camera {
+    void translate(float x, float y) {
+        assert_initialized("jade::camera::translate()");
+        context.cam.translate(x, y);
+        context.sprite_shader.use();
+        context.sprite_shader.set_mat4("u_view", context.cam.view);
+        context.shape_shader.use();
+        context.shape_shader.set_mat4("u_view", context.cam.view);
+        context.text_shader.use();
+        context.text_shader.set_mat4("u_view", context.cam.view);
+    }
 
-void jade::core::set_update_callback(std::function<void(double dt)> cb) {
-    context.cbs.on_update = cb;
-}
-
-void jade::core::set_draw_callback(std::function<void()> cb) {
-    context.cbs.on_draw = cb;
-}
-
-void jade::core::set_key_callback(std::function<void(Key key, InputAction action)> cb) {
-    context.cbs.on_key = cb;
-}
-
-void jade::core::set_char_callback(std::function<void(char c)> cb) {
-    context.cbs.on_char = cb;
-}
-
-void jade::core::set_mouse_button_callback(std::function<void(MouseButton btn, InputAction action)> cb) {
-    context.cbs.on_mouse_button = cb;
-}
-
-void jade::core::set_mouse_moved_callback(std::function<void(double x, double y)> cb) {
-    context.cbs.on_mouse_moved = cb;
-}
-
-void jade::core::set_scroll_callback(std::function<void(double x, double y)> cb) {
-    context.cbs.on_scroll = cb;
-}
-
-bool jade::input::is_key_down(Key key) {
-    assert_initialized("jade::input::is_key_down()");
-    return glfwGetKey(context.window, (int)key) == GLFW_PRESS;
-}
-
-bool jade::input::is_mouse_button_down(MouseButton mb) {
-    assert_initialized("jade::input::is_mouse_button_down()");
-    return glfwGetMouseButton(context.window, (int)mb) == GLFW_PRESS;
-}
-
-jade::Pos jade::input::get_mouse_pos() {
-    assert_initialized("jade::input::get_mouse_pos()");
-    double x, y;
-    glfwGetCursorPos(context.window, &x, &y);
-    return Pos { (float)x, (float)y };
-}
-
-void jade::draw::set_wireframe(bool wf) {
-    assert_initialized("jade::draw::set_wireframe()");
-    glPolygonMode(GL_FRONT_AND_BACK, wf ? GL_LINE : GL_FILL);
-}
-
-void jade::draw::set_color(const Color& col) {
-    assert_initialized("jade::draw::set_color()");
-    context.shape_shader.use();
-    context.shape_shader.set_color("u_col", col);
-    context.text_shader.use();
-    context.text_shader.set_color("u_col", col);
-}
-
-void jade::camera::translate(float x, float y) {
-    assert_initialized("jade::camera::translate()");
-    context.cam.translate(x, y);
-    context.sprite_shader.use();
-    context.sprite_shader.set_mat4("u_view", context.cam.view);
-    context.shape_shader.use();
-    context.shape_shader.set_mat4("u_view", context.cam.view);
-    context.text_shader.use();
-    context.text_shader.set_mat4("u_view", context.cam.view);
-}
-
-void jade::camera::rotate(float deg) {
-    assert_initialized("jade::camera::rotate()");
-    context.cam.rotate(deg);
-    context.sprite_shader.use();
-    context.sprite_shader.set_mat4("u_view", context.cam.view);
-    context.shape_shader.use();
-    context.shape_shader.set_mat4("u_view", context.cam.view);
-    context.text_shader.use();
-    context.text_shader.set_mat4("u_view", context.cam.view);
+    void rotate(float deg) {
+        assert_initialized("jade::camera::rotate()");
+        context.cam.rotate(deg);
+        context.sprite_shader.use();
+        context.sprite_shader.set_mat4("u_view", context.cam.view);
+        context.shape_shader.use();
+        context.shape_shader.set_mat4("u_view", context.cam.view);
+        context.text_shader.use();
+        context.text_shader.set_mat4("u_view", context.cam.view);
+    }
 }

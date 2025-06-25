@@ -1,12 +1,7 @@
 #pragma once
 
-namespace jade {
-
-    struct Pos {
-        float x, y;
-    };
-
-    enum class InputAction {
+namespace jade::input {
+    enum class Action {
         Null = -1,
         Release = 0,
         Press = 1,

@@ -4,7 +4,7 @@
 #include "mesh.h"
 #include "texture.h"
 
-namespace jade {
+namespace jade::draw {
     class Sprite : public Drawable {
     public:
         Sprite();
@@ -13,7 +13,7 @@ namespace jade {
         void draw() override;
 
     private:
-        Mesh mesh;
-        Texture tex;
+        backend::Mesh mesh;
+        backend::Texture tex;
     };
 }

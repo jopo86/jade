@@ -4,7 +4,7 @@
 
 #include <glad/glad.h>
 
-namespace jade {
+namespace jade::backend {
     class Texture {
     public:
         GLuint tex;

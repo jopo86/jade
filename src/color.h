@@ -1,6 +1,6 @@
 #pragma once
 
-namespace jade {
+namespace jade::core {
     class Color {
     public:
         float r, g, b, a;

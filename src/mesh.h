@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-namespace jade {
+namespace jade::backend {
 
     enum class MeshFormat {
         P,

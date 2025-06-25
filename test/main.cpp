@@ -1,29 +1,30 @@
 #include <iostream>
 
-#include "../src/jade.h"
-#include "../src/sprite.h"
+#include "../src/prelude.h"
 
 const float CAM_SPEED = 500.0f;
 
 int main()
 {
-    jade::core::init();
+    jade::init();
 
-    jade::Sprite smiley("../test/assets/smiley.jpg");
+    Sprite smiley("../test/assets/smiley.jpg");
+    smiley.translate(250, 300);
+    smiley.scale(0.2f);
 
-    jade::Callbacks cbs;
-    cbs.on_draw = [&smiley]() {
+    Shape circle = Shape::circle(100, 6, Color::blue());
+    circle.translate(550, 300);
+
+    Callbacks cbs;
+    cbs.on_update = [&](double dt) {
+        if (is_key_down(Key::Esc)) jade::terminate();
+        circle.rotate(-45.0f * dt);
+    };
+    cbs.on_draw = [&]() {
         smiley.draw();
-    };
-    cbs.on_update = [](double dt) {
-        if (jade::input::is_key_down(jade::Key::W)) jade::camera::translate(0.0f, CAM_SPEED * dt);
-        if (jade::input::is_key_down(jade::Key::A)) jade::camera::translate(-CAM_SPEED * dt, 0.0f);
-        if (jade::input::is_key_down(jade::Key::S)) jade::camera::translate(0.0f, -CAM_SPEED * dt);
-        if (jade::input::is_key_down(jade::Key::D)) jade::camera::translate(CAM_SPEED * dt, 0.0f);
-        if (jade::input::is_key_down(jade::Key::Esc)) jade::core::terminate();
+        circle.draw();
     };
 
-    jade::core::set_callbacks(cbs);
-    jade::core::run();
-    jade::core::cleanup();
+    jade::set_callbacks(cbs);
+    jade::run();
 }

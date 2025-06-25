@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace jade {
+namespace jade::backend {
     class Camera {
     public:
         glm::vec3 pos, front, up;
