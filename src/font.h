@@ -1,0 +1,30 @@
+#pragma once
+
+#include <unordered_map>
+#include <string>
+
+#include <glad/glad.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+namespace jade::backend {
+
+    struct Glyph {
+        GLuint tex;
+        int width, height;
+        int bearing_x, bearing_y;
+        unsigned int advance;
+    };
+
+    class Font {
+    public:
+        Font();
+        Font(const std::string& path, size_t px);
+
+        std::unordered_map<char, Glyph> glyphs;
+        static std::unordered_map<std::string, Font> loaded;
+
+    private:
+        FT_Face face;
+    };
+}

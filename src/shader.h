@@ -24,6 +24,7 @@ namespace jade::backend {
 
         static Shader colored();
         static Shader textured();
+        static Shader text();
 
     };
 }

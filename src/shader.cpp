@@ -110,7 +110,7 @@ namespace jade::backend {
     Shader Shader::colored() {
         return Shader(
             R"(
-#version 460
+#version 460 core
 
 layout (location = 0) in vec2 i_pos;
 
@@ -123,7 +123,7 @@ void main() {
 }
             )",
             R"(
-#version 460
+#version 460 core
 
 out vec4 o_col;
 
@@ -139,7 +139,7 @@ void main() {
     Shader Shader::textured() {
         return Shader(
             R"(
-#version 460
+#version 460 core
 
 layout (location = 0) in vec2 i_pos;
 layout (location = 1) in vec2 i_tex_coord;
@@ -156,7 +156,7 @@ void main() {
 }
             )",
             R"(
-#version 460
+#version 460 core
 
 in vec2 io_tex_coord;
 
@@ -166,6 +166,41 @@ uniform sampler2D u_tex;
 
 void main() {
     o_col = texture(u_tex, io_tex_coord);
+}
+            )"
+        );
+    }
+    
+    Shader Shader::text() {
+        return Shader(
+            R"(
+#version 460 core
+
+layout (location = 0) in vec4 i_vertex;
+
+out vec2 io_tex_coord;
+
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_proj;
+
+void main() {
+    gl_Position = u_proj * u_view * u_model * vec4(i_vertex.xy, 0.0f, 1.0f);
+    io_tex_coord = i_vertex.zw;
+}
+            )",
+            R"(
+#version 460 core
+
+in vec2 io_tex_coord;
+
+out vec4 o_col;
+
+uniform sampler2D u_tex;
+uniform vec4 u_col;
+
+void main() {
+    o_col = u_col * vec4(1.0, 1.0, 1.0, texture(u_tex, io_tex_coord).r);
 }
             )"
         );

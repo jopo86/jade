@@ -135,9 +135,14 @@ namespace jade::core {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        if (FT_Init_FreeType(&context.ft)) {
+            err("jade::core::init(): failed to initialize FreeType");
+            return;
+        }
+
         context.sprite_shader = Shader::textured();
         context.shape_shader = Shader::colored();
-        // context.text_shader = Shader::text();
+        context.text_shader = Shader::text();
 
         context.cam = Camera(fb_width, fb_height);
         context.sprite_shader.use();
@@ -155,6 +160,7 @@ namespace jade::core {
                 glfwDestroyWindow(context.window);
                 glfwTerminate();
                 allocs.free();
+                FT_Done_FreeType(context.ft);
             }
         } static cleanup_guard;
 

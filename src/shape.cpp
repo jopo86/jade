@@ -1,5 +1,4 @@
 #include "shape.h"
-
 #include "internal.h"
 
 namespace jade::hidden {

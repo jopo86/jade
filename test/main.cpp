@@ -2,8 +2,6 @@
 
 #include "../src/prelude.h"
 
-const float CAM_SPEED = 500.0f;
-
 int main()
 {
     jade::init();
@@ -15,6 +13,8 @@ int main()
     Shape circle = Shape::circle(100, 6, Color::blue());
     circle.translate(550, 300);
 
+    Text text("hello world", "../test/assets/arial.ttf", Color::red());
+
     Callbacks cbs;
     cbs.on_update = [&](double dt) {
         if (is_key_down(Key::Esc)) jade::terminate();
@@ -23,6 +23,7 @@ int main()
     cbs.on_draw = [&]() {
         smiley.draw();
         circle.draw();
+        text.draw();
     };
 
     jade::set_callbacks(cbs);

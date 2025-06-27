@@ -7,5 +7,6 @@ namespace jade::internal {
         glDeleteBuffers(bufs.size(), bufs.data());
         glDeleteTextures(texs.size(), texs.data());
         for (GLuint prog : progs) glDeleteProgram(prog);
+        for (FT_Face face : faces) FT_Done_Face(face);
     }
 }
