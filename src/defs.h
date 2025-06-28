@@ -1,5 +1,19 @@
 #pragma once
 
+namespace jade::core {
+    enum class Origin {
+        Mid,
+        BottomLeft,
+        BottomMid,
+        BottomRight,
+        MidRight,
+        TopRight,
+        TopMid,
+        TopLeft,
+        MidLeft,
+    };
+}
+
 namespace jade::input {
     enum class Action {
         Null = -1,

@@ -116,15 +116,16 @@ namespace jade::core {
         glfwSetCursorPosCallback(context.window, cursor_pos_callback);
         glfwSetScrollCallback(context.window, scroll_callback);
 
-        glfwSwapInterval(context.cfg.vsync);
-
         glfwMakeContextCurrent(context.window);
+        glfwSwapInterval(context.cfg.vsync ? 1 : 0);
+        
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             err("jade::core::init(): failed to initialize Glad");
             return;
         }
 
         context.initd = true;
+
 
         int fb_width = 0, fb_height = 0;
         glfwGetFramebufferSize(context.window, &fb_width, &fb_height);

@@ -17,7 +17,7 @@ namespace jade {
             int width = 800, height = 600;
             std::string title = "Jade";
             Color background = Color::black();
-            int vsync = true;
+            bool vsync = true;
             int fps = 60;
             bool resizable = true;
             bool anti_alias = true;

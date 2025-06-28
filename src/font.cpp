@@ -52,7 +52,7 @@ namespace jade::backend {
                 tex,
                 face->glyph->bitmap.width, face->glyph->bitmap.rows,
                 face->glyph->bitmap_left, face->glyph->bitmap_top,
-                face->glyph->advance.x
+                face->glyph->advance.x >> 6
             };
             glyphs.insert({ c, glyph });
             
@@ -60,5 +60,15 @@ namespace jade::backend {
         }
         glBindTexture(GL_TEXTURE_2D, 0);
         internal::allocs.faces.push_back(face);
+    }
+
+    glm::ivec2 Font::get_str_size(const std::string& str) {
+        glm::ivec2 size(0.0f, glyphs['A'].height);
+        for (int i = 0; i < str.size(); i++) {
+            Glyph g = glyphs[str[i]];
+            if (i < str.size() - 1) size.x += g.advance;
+            else size.x += g.bearing_x + g.width;
+        }
+        return size;
     }
 }

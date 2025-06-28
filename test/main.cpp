@@ -13,12 +13,14 @@ int main()
     Shape circle = Shape::circle(100, 6, Color::blue());
     circle.translate(550, 300);
 
-    Text text("hello world", "../test/assets/arial.ttf", Color::red());
+    Text text("hello world", "../test/assets/arial.ttf", Color::red(), Origin::BottomRight);
+    text.translate(800, 0, 0.1f);
 
     Callbacks cbs;
     cbs.on_update = [&](double dt) {
         if (is_key_down(Key::Esc)) jade::terminate();
         circle.rotate(-45.0f * dt);
+        // text.set_text("FPS: " + std::to_string((int)round(1/dt)));
     };
     cbs.on_draw = [&]() {
         smiley.draw();

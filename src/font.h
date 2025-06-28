@@ -4,6 +4,7 @@
 #include <string>
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -20,6 +21,8 @@ namespace jade::backend {
     public:
         Font();
         Font(const std::string& path, size_t px);
+
+        glm::ivec2 get_str_size(const std::string& str);
 
         std::unordered_map<char, Glyph> glyphs;
         static std::unordered_map<std::string, Font> loaded;

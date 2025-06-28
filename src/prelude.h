@@ -13,6 +13,7 @@ namespace jade {
 using jade::core::Config;
 using jade::core::Callbacks;
 using jade::core::Color;
+using jade::core::Origin;
 
 using namespace jade::draw;
 
