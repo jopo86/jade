@@ -1,4 +1,6 @@
+set(EXAMPLES bare_minimum config drawing input)
 
-add_executable(drawing drawing.cpp)
-
-target_link_libraries(a PRIVATE jade)
+foreach(example ${EXAMPLES})
+    add_executable(${example} ${example}.cpp)
+    target_link_libraries(${example} PRIVATE jade)
+endforeach()

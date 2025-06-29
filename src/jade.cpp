@@ -29,6 +29,8 @@ namespace jade::hidden {
         context.shape_shader.set_mat4("u_proj", context.cam.proj);
         context.text_shader.use();
         context.text_shader.set_mat4("u_proj", context.cam.proj);
+
+        if (context.cbs.on_resize) context.cbs.on_resize(width, height);
     }
 
     void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -117,7 +119,7 @@ namespace jade::core {
         glfwSetScrollCallback(context.window, scroll_callback);
 
         glfwMakeContextCurrent(context.window);
-        glfwSwapInterval(context.cfg.vsync ? 1 : 0);
+        glfwSwapInterval(context.cfg.vsync);
         
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
             err("jade::core::init(): failed to initialize Glad");
@@ -125,7 +127,6 @@ namespace jade::core {
         }
 
         context.initd = true;
-
 
         int fb_width = 0, fb_height = 0;
         glfwGetFramebufferSize(context.window, &fb_width, &fb_height);
@@ -200,49 +201,125 @@ namespace jade::core {
         assert_initialized("jade::core::terminate()");
         glfwSetWindowShouldClose(context.window, true);
     }
-    double get_time() {
-        assert_initialized("jade::core::get_time()");
-        return glfwGetTime();
+
+    void set_config(const Config& cfg) {
+        context.cfg = cfg;
+        if (context.initd) {
+            glfwSetWindowSize(context.window, cfg.width, cfg.height);
+            glfwSetWindowTitle(context.window, cfg.title.c_str());
+            glfwSwapInterval(cfg.vsync);
+            glfwSetWindowAttrib(context.window, GLFW_RESIZABLE, cfg.resizable);
+            context.cfg.anti_alias ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
+        }
+    }
+
+    const Config& get_config() {
+        return context.cfg;
+    }
+
+    void set_config_width(int width) {
+        context.cfg.width = width;
+        if (context.initd) glfwSetWindowSize(context.window, width, context.cfg.height);
+    }
+
+    void set_config_height(int height) {
+        context.cfg.height = height;
+        if (context.initd) glfwSetWindowSize(context.window, context.cfg.width, height);
+    }
+
+    void set_config_title(const std::string& title) {
+        context.cfg.title = title;
+        if (context.initd) glfwSetWindowTitle(context.window, title.c_str());
+    }
+
+    void set_config_background(const Color& background) {
+        context.cfg.background = background;
+    }
+
+    void set_config_vsync(bool vsync) {
+        context.cfg.vsync = vsync;
+        if (context.initd) glfwSwapInterval(vsync);
+    }
+
+    void set_config_fps(int fps) {
+        context.cfg.fps = fps;
+    }
+
+    void set_config_resizable(bool resizable) {
+        context.cfg.resizable = resizable;
+        if (context.initd) glfwSetWindowAttrib(context.window, GLFW_RESIZABLE, resizable);
+    }
+
+    void set_config_anti_alias(bool anti_alias) {
+        context.cfg.anti_alias = anti_alias;
+        if (context.initd) anti_alias ? glEnable(GL_MULTISAMPLE) : glDisable(GL_MULTISAMPLE);
     }
 
     void set_callbacks(const Callbacks& cbs) {
         context.cbs = cbs;
     }
 
-    void set_error_callback(std::function<void(const std::string& msg)> cb) {
-        context.cbs.on_err = cb;
+    const Callbacks& get_callbacks() {
+        return context.cbs;
     }
 
-    void set_warn_callback(std::function<void(const std::string& msg)> cb) {
-        context.cbs.on_warn = cb;
+    void set_error_callback(std::function<void(const std::string& msg)> fn) {
+        context.cbs.on_err = fn;
     }
 
-    void set_update_callback(std::function<void(double dt)> cb) {
-        context.cbs.on_update = cb;
+    void set_warn_callback(std::function<void(const std::string& msg)> fn) {
+        context.cbs.on_warn = fn;
     }
 
-    void set_draw_callback(std::function<void()> cb) {
-        context.cbs.on_draw = cb;
+    void set_update_callback(std::function<void(double dt)> fn) {
+        context.cbs.on_update = fn;
     }
 
-    void set_key_callback(std::function<void(Key key, Action action)> cb) {
-        context.cbs.on_key = cb;
+    void set_draw_callback(std::function<void()> fn) {
+        context.cbs.on_draw = fn;
     }
 
-    void set_char_callback(std::function<void(char c)> cb) {
-        context.cbs.on_char = cb;
+    void set_key_callback(std::function<void(Key key, Action action)> fn) {
+        context.cbs.on_key = fn;
     }
 
-    void set_mouse_button_callback(std::function<void(MouseButton btn, Action action)> cb) {
-        context.cbs.on_mouse_button = cb;
+    void set_char_callback(std::function<void(char c)> fn) {
+        context.cbs.on_char = fn;
     }
 
-    void set_mouse_moved_callback(std::function<void(double x, double y)> cb) {
-        context.cbs.on_mouse_moved = cb;
+    void set_mouse_button_callback(std::function<void(MouseButton btn, Action action)> fn) {
+        context.cbs.on_mouse_button = fn;
     }
 
-    void set_scroll_callback(std::function<void(double x, double y)> cb) {
-        context.cbs.on_scroll = cb;
+    void set_mouse_moved_callback(std::function<void(double x, double y)> fn) {
+        context.cbs.on_mouse_moved = fn;
+    }
+
+    void set_scroll_callback(std::function<void(double x, double y)> fn) {
+        context.cbs.on_scroll = fn;
+    }
+
+    void set_resize_callback(std::function<void(int width, int height)> fn) {
+        context.cbs.on_resize = fn;
+    }
+
+    void center_window() {
+        assert_initialized("jade::core::center_window()");
+        
+        struct Monitor {
+            int x, y, width, height;
+        } monitor;
+        glfwGetMonitorWorkarea(glfwGetPrimaryMonitor(), &monitor.x, &monitor.y, &monitor.width, &monitor.height);
+        glfwSetWindowPos(
+            context.window,
+            monitor.x + monitor.width / 2 - context.cfg.width / 2,
+            monitor.y + monitor.height / 2 - context.cfg.height / 2
+        );
+    }
+    
+    double get_time() {
+        assert_initialized("jade::core::get_time()");
+        return glfwGetTime();
     }
 }
 
@@ -270,12 +347,27 @@ namespace jade::input {
         glfwGetCursorPos(context.window, nullptr, &y);
         return y;
     }
+
+    void set_cursor_mode(CursorMode mode) {
+        glfwSetInputMode(context.window, GLFW_CURSOR, (int)mode);
+    }
+
+    CursorMode get_cursor_mode() {
+        return (CursorMode)glfwGetInputMode(context.window, GLFW_CURSOR);
+    }
 }
 
 namespace jade::draw {
-    void set_wireframe(bool wf) {
+    void set_draw_mode(DrawMode mode) {
         assert_initialized("jade::draw::set_wireframe()");
-        glPolygonMode(GL_FRONT_AND_BACK, wf ? GL_LINE : GL_FILL);
+        glPolygonMode(GL_FRONT_AND_BACK, (GLenum)mode);
+    }
+
+    DrawMode get_draw_mode() {
+        assert_initialized("jade::draw::set_wireframe()");
+        int polygon_mode = 0;
+        glGetIntegerv(GL_POLYGON_MODE, &polygon_mode);
+        return (DrawMode)polygon_mode;
     }
 }
 

@@ -30,7 +30,7 @@ namespace jade::draw {
         this->origin = origin;
 
         if (Font::loaded.find(font_path) == Font::loaded.end()) {
-            Font::loaded.insert({ font_path, Font(font_path, 96) });
+            Font::loaded.insert({ font_path, Font(font_path, 24) });
         }
         p_font = &Font::loaded[font_path];
 

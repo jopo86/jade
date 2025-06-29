@@ -32,6 +32,7 @@ namespace jade {
             std::function<void(char c)> on_char;
             std::function<void(input::MouseButton mb, input::Action action)> on_mouse_button;
             std::function<void(double x, double y)> on_mouse_moved, on_scroll;
+            std::function<void(int width, int height)> on_resize;
         };
 
         void init();
@@ -41,17 +42,31 @@ namespace jade {
         void run();
         void terminate();
 
-        void set_callbacks(const Callbacks& cbs);
-        void set_error_callback(std::function<void(const std::string& msg)> cb);
-        void set_warn_callback(std::function<void(const std::string& msg)> cb);
-        void set_update_callback(std::function<void(double dt)> cb);
-        void set_draw_callback(std::function<void()> cb);
-        void set_key_callback(std::function<void(input::Key key, input::Action action)> cb);
-        void set_char_callback(std::function<void(char c)> cb);
-        void set_mouse_button_callback(std::function<void(input::MouseButton mb, input::Action action)> cb);
-        void set_mouse_moved_callback(std::function<void(double x, double y)> cb);
-        void set_scroll_callback(std::function<void(double x, double y)> cb);
+        void set_config(const Config& cfg);
+        const Config& get_config();
+        void set_config_width(int width);
+        void set_config_height(int height);
+        void set_config_title(const std::string& title);
+        void set_config_background(const Color& background);
+        void set_config_vsync(bool vsync);
+        void set_config_fps(int fps);
+        void set_config_resizable(bool resizable);
+        void set_config_anti_alias(bool anti_alias);
 
+        void set_callbacks(const Callbacks& cbs);
+        const Callbacks& get_callbacks();
+        void set_error_callback(std::function<void(const std::string& msg)> fn);
+        void set_warn_callback(std::function<void(const std::string& msg)> fn);
+        void set_update_callback(std::function<void(double dt)> fn);
+        void set_draw_callback(std::function<void()> fn);
+        void set_key_callback(std::function<void(input::Key key, input::Action action)> fn);
+        void set_char_callback(std::function<void(char c)> fn);
+        void set_mouse_button_callback(std::function<void(input::MouseButton mb, input::Action action)> fn);
+        void set_mouse_moved_callback(std::function<void(double x, double y)> fn);
+        void set_scroll_callback(std::function<void(double x, double y)> fn);
+        void set_resize_callback(std::function<void(int width, int height)> fn);
+
+        void center_window();
         double get_time();
     }
 
@@ -60,10 +75,13 @@ namespace jade {
         bool is_mouse_button_down(MouseButton mb);
         double get_mouse_x();
         double get_mouse_y();
+        void set_cursor_mode(CursorMode mode);
+        CursorMode get_cursor_mode();
     }
 
     namespace draw {
-        void set_wireframe(bool wf);
+        void set_draw_mode(DrawMode mode);
+        DrawMode get_draw_mode();
     }
     
     namespace camera {
