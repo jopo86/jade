@@ -10,4 +10,4 @@ add_subdirectory(external/freetype)
 
 add_subdirectory(src)
 
-add_subdirectory(test)
+add_subdirectory(examples)

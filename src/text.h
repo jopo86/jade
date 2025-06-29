@@ -11,6 +11,9 @@ namespace jade::draw {
     class Text : public Drawable {
     public:
         Text();
+        Text(const std::string& text, const std::string& font_path);
+        Text(const std::string& text, const std::string& font_path, const core::Color& color);
+        Text(const std::string& text, const std::string& font_path, core::Origin origin);
         Text(const std::string& text, const std::string& font_path, const core::Color& color, core::Origin origin);
 
         void draw() override;

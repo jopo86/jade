@@ -91,68 +91,69 @@ namespace jade::backend {
         else glDrawArrays(GL_TRIANGLES, 0, index_ct);
     }
 
-    Mesh Mesh::triangle(float l, bool t) {
-        return triangle(l, glm::sqrt(l*l - l/2*l/2), t);
+    Mesh Mesh::triangle(float s, bool t, float xoff, float yoff) {
+        return triangle(s, glm::sqrt(s*s - s/2*s/2), t, xoff, yoff);
     }
 
-    Mesh Mesh::triangle(float b, float h, bool t) {
+    Mesh Mesh::triangle(float b, float h, bool t, float xoff, float yoff) {
         if (!t) {
             float* vertices = new float[6]{
-                -b/2, -h/2,
-                b/2, -h/2,
-                0.0f, h/2
+                -b/2 + xoff, -h/2 + yoff,
+                b/2 + xoff, -h/2 + yoff,
+                0.0f + xoff, h/2 + yoff
             };
             allocs.arrs.push_back(vertices);
             return Mesh(vertices, 6 * sizeof(float), MeshFormat::P);
         } else {
             float* vertices = new float[12]{
-                -b/2, -h/2,     0.0f, 0.0f,
-                b/2, -h/2,     1.0f, 0.0f,
-                0.0f, h/2,     0.5f, 1.0f
+                -b/2 + xoff, -h/2 + yoff,     0.0f, 0.0f,
+                b/2 + xoff, -h/2 + yoff,     1.0f, 0.0f,
+                0.0f + xoff, h/2 + yoff,     0.5f, 1.0f
             };
             allocs.arrs.push_back(vertices);
             return Mesh(vertices, 12 * sizeof(float), MeshFormat::PT);
         }
     }
 
-    Mesh Mesh::square(float l, bool t) {
-        return quad(l, l, t);
+    Mesh Mesh::square(float l, bool t, float xoff, float yoff) {
+        return quad(l, l, t, xoff, yoff);
     }
 
-    Mesh Mesh::quad(float w, float h, bool t) {
+    Mesh Mesh::quad(float w, float h, bool t, float xoff, float yoff) {
         if (!t) {
             float* vertices = new float[12]{
-                -w/2,  h/2,
-                -w/2, -h/2,
-                w/2, -h/2,
-                w/2, -h/2,
-                w/2,  h/2,
-                -w/2,  h/2
+                -w/2 + xoff,  h/2 + yoff,
+                -w/2 + xoff, -h/2 + yoff,
+                w/2 + xoff, -h/2 + yoff,
+                w/2 + xoff, -h/2 + yoff,
+                w/2 + xoff,  h/2 + yoff,
+                -w/2 + xoff,  h/2 + yoff
             };
             allocs.arrs.push_back(vertices);
             return Mesh(vertices, 12 * sizeof(float), MeshFormat::P);
         } else {
             float* vertices = new float[24]{
-                -w/2,  h/2,     0.0f, 1.0f,
-                -w/2, -h/2,     0.0f, 0.0f,
-                w/2, -h/2,     1.0f, 0.0f,
-                w/2, -h/2,     1.0f, 0.0f,
-                w/2,  h/2,     1.0f, 1.0f,
-                -w/2,  h/2,     0.0f, 1.0f
+                -w/2 + xoff,  h/2 + yoff,     0.0f, 1.0f,
+                -w/2 + xoff, -h/2 + yoff,     0.0f, 0.0f,
+                w/2 + xoff, -h/2 + yoff,     1.0f, 0.0f,
+                w/2 + xoff, -h/2 + yoff,     1.0f, 0.0f,
+                w/2 + xoff,  h/2 + yoff,     1.0f, 1.0f,
+                -w/2 + xoff,  h/2 + yoff,     0.0f, 1.0f
             };
             allocs.arrs.push_back(vertices);
             return Mesh(vertices, 24 * sizeof(float), MeshFormat::PT);
         }
     }
 
-    Mesh Mesh::circle(float r, int n, bool t) {
+    Mesh Mesh::circle(float r, int n, bool t, float xoff, float yoff) {
         if (!t) {
             float* vertices = new float[n * 2 + 2];
-            vertices[0] = vertices[1] = 0.0f;
+            vertices[0] = xoff;
+            vertices[1] = yoff;
             for (int i = 2; i < n * 2 + 2; i += 2) {
                 float a = glm::two_pi<float>() / n * (i - 2) / 2;
-                vertices[i + 0] = r * glm::cos(a);
-                vertices[i + 1] = r * glm::sin(a);
+                vertices[i + 0] = r * glm::cos(a) + xoff;
+                vertices[i + 1] = r * glm::sin(a) + yoff;
             }
             unsigned int* indices = new unsigned int[n * 3];
             for (int i = 0, j = 1; i < n * 3; i += 3, j++) {
@@ -165,12 +166,13 @@ namespace jade::backend {
             return Mesh(vertices, (n * 2 + 2) * sizeof(float), indices, n * 3 * sizeof(unsigned int), MeshFormat::P);
         } else {
             float* vertices = new float[n * 4 + 4];
-            vertices[0] = vertices[1] = 0.0f;
+            vertices[0] = xoff;
+            vertices[1] = yoff;
             vertices[2] = vertices[3] = 0.5f;
             for (int i = 4; i < n * 4 + 4; i += 4) {
                 float a = glm::two_pi<float>() / n * (i - 4) / 4;
-                vertices[i + 0] = r * glm::cos(a);
-                vertices[i + 1] = r * glm::sin(a);
+                vertices[i + 0] = r * glm::cos(a) + xoff;
+                vertices[i + 1] = r * glm::sin(a) + yoff;
                 vertices[i + 2] = vertices[i + 0] / 2.0f + 0.5f;
                 vertices[i + 3] = vertices[i + 1] / 2.0f + 0.5f;
             }

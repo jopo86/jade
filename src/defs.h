@@ -4,13 +4,13 @@ namespace jade::core {
     enum class Origin {
         Mid,
         BottomLeft,
-        BottomMid,
+        Bottom,
         BottomRight,
-        MidRight,
+        Right,
         TopRight,
-        TopMid,
+        Top,
         TopLeft,
-        MidLeft,
+        Left,
     };
 }
 

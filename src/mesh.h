@@ -21,10 +21,10 @@ namespace jade::backend {
 
         void draw();
 
-        static Mesh triangle(float side_len, bool tex_coords);
-        static Mesh triangle(float base, float height, bool tex_coords);
-        static Mesh square(float side_len, bool tex_coords);
-        static Mesh quad(float width, float height, bool tex_coords);
-        static Mesh circle(float radius, int n_segments, bool tex_coords);
+        static Mesh triangle(float side_len, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
+        static Mesh triangle(float base, float height, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
+        static Mesh square(float side_len, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
+        static Mesh quad(float width, float height, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
+        static Mesh circle(float radius, int n_segments, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
     };
 };

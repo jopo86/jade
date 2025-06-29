@@ -11,14 +11,20 @@ using jade::backend::Font, jade::backend::Glyph;
 
 namespace jade::draw {
 
-    Text::Text() : p_font(nullptr) {
-        model = glm::mat4(1.0f);
-    }
+    Text::Text() : p_font(nullptr) {}
 
-    Text::Text(const std::string& text, const std::string& font_path, const Color& color, Origin origin) {
+    Text::Text(const std::string& text, const std::string& font_path) 
+        : Text(text, font_path, Color::white(), Origin::Mid) {}
+
+    Text::Text(const std::string& text, const std::string& font_path, const core::Color& color) 
+        : Text(text, font_path, color, Origin::Mid) {}
+
+    Text::Text(const std::string& text, const std::string& font_path, core::Origin origin) 
+        : Text(text, font_path, Color::white(), origin) {}
+
+    Text::Text(const std::string& text, const std::string& font_path, const Color& color, Origin origin) : vao(0), vbo(0) {
         assert_initialized("jade::draw::Text::Text()");
 
-        model = glm::mat4(1.0f);
         this->text = text;
         this->color = color;
         this->origin = origin;
@@ -61,14 +67,14 @@ namespace jade::draw {
             float w = g.width;
             float h = g.height;
 
-            if (origin == Origin::BottomMid || origin == Origin::Mid || origin == Origin::TopMid)
+            if (origin == Origin::Bottom || origin == Origin::Mid || origin == Origin::Top)
                 x -= width / 2;
-            else if (origin == Origin::BottomRight || origin == Origin::MidRight || origin == Origin::TopRight)
+            else if (origin == Origin::BottomRight || origin == Origin::Right || origin == Origin::TopRight)
                 x -= width;
             
-            if (origin == Origin::MidLeft || origin == Origin::Mid || origin == Origin::MidRight)
+            if (origin == Origin::Left || origin == Origin::Mid || origin == Origin::Right)
                 y -= height / 2;
-            else if (origin == Origin::TopLeft || origin == Origin::TopMid || origin == Origin::TopRight)
+            else if (origin == Origin::TopLeft || origin == Origin::Top || origin == Origin::TopRight)
                 y -= height;
 
             float vertices[6][4] = {
