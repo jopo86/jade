@@ -13,18 +13,18 @@ int main() {
 
 
     std::vector<Text> texts;
-    texts.push_back(Text("Arrows L/R: Change window size", "../examples/assets/lato.ttf", Color::black(), Origin::BottomLeft));
-    texts.push_back(Text("Arrows U/D: Change background brightness", "../examples/assets/lato.ttf", Color::black(), Origin::BottomLeft));
-    texts.push_back(Text("[V]: Toggle between V-SYNC and unlocked FPS", "../examples/assets/lato.ttf", Color::black(), Origin::BottomLeft));
-    texts.push_back(Text("[R]: Toggle resizeable window", "../examples/assets/lato.ttf", Color::black(), Origin::BottomLeft));
-    texts.push_back(Text("[Esc]: Quit", "../examples/assets/lato.ttf", Color::black(), Origin::BottomLeft));
+    texts.push_back(Text("Arrows L/R: Change window size", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomLeft));
+    texts.push_back(Text("Arrows U/D: Change background brightness", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomLeft));
+    texts.push_back(Text("[V]: Toggle between V-SYNC and unlocked FPS", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomLeft));
+    texts.push_back(Text("[R]: Toggle resizeable window", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomLeft));
+    texts.push_back(Text("[Esc]: Quit", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomLeft));
 
     for (int i = 0; i < texts.size(); i++) {
         texts[i].set_position(20, 25 + texts.size() * 30 - 30 * (i + 1), 0.1f);
     }
 
-    Text dims_text("800x600", "../examples/assets/lato.ttf", Color::black(), Origin::BottomRight);
-    Text fps_text("FPS: 0", "../examples/assets/lato.ttf", Color::black(), Origin::BottomRight);
+    Text dims_text("800x600", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomRight);
+    Text fps_text("FPS: 0", "../examples/assets/lato.ttf", 24, Color::black(), Origin::BottomRight);
     dims_text.set_position(780, 55, 0.1f);
     fps_text.set_position(780, 25, 0.1f);
 

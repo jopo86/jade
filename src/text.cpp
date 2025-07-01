@@ -11,28 +11,30 @@ using jade::backend::Font, jade::backend::Glyph;
 
 namespace jade::draw {
 
+    std::unordered_map<std::pair<std::string, int>, Font, Text::FontKeyHash> Text::loaded_fonts;
+
     Text::Text() : p_font(nullptr) {}
 
-    Text::Text(const std::string& text, const std::string& font_path) 
-        : Text(text, font_path, Color::white(), Origin::Mid) {}
+    Text::Text(const std::string& text, const std::string& font_path, int font_size) 
+        : Text(text, font_path, font_size, Color::white(), Origin::Mid) {}
 
-    Text::Text(const std::string& text, const std::string& font_path, const core::Color& color) 
-        : Text(text, font_path, color, Origin::Mid) {}
+    Text::Text(const std::string& text, const std::string& font_path, int font_size, const core::Color& color) 
+        : Text(text, font_path, font_size, color, Origin::Mid) {}
 
-    Text::Text(const std::string& text, const std::string& font_path, core::Origin origin) 
-        : Text(text, font_path, Color::white(), origin) {}
+    Text::Text(const std::string& text, const std::string& font_path, int font_size, core::Origin origin) 
+        : Text(text, font_path, font_size, Color::white(), origin) {}
 
-    Text::Text(const std::string& text, const std::string& font_path, const Color& color, Origin origin) : vao(0), vbo(0) {
+    Text::Text(const std::string& text, const std::string& font_path, int font_size, const Color& color, Origin origin) : vao(0), vbo(0) {
         assert_initialized("jade::draw::Text::Text()");
 
         this->text = text;
         this->color = color;
         this->origin = origin;
 
-        if (Font::loaded.find(font_path) == Font::loaded.end()) {
-            Font::loaded.insert({ font_path, Font(font_path, 24) });
+        if (loaded_fonts.find({ font_path, font_size }) == loaded_fonts.end()) {
+            loaded_fonts.insert({ { font_path, font_size }, Font(font_path, font_size) });
         }
-        p_font = &Font::loaded[font_path];
+        p_font = &loaded_fonts[{ font_path, font_size }];
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
@@ -49,7 +51,7 @@ namespace jade::draw {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    void Text::draw() {
+    void Text::draw() const {
         context.text_shader.use();
         context.text_shader.set_mat4("u_model", model);
         context.text_shader.set_color("u_col", color);
@@ -111,19 +113,19 @@ namespace jade::draw {
         this->color = color;
     }
 
-    int Text::get_width() {
+    int Text::get_width() const {
         return p_font->get_str_size(text).x;
     }
 
-    int Text::get_height() {
+    int Text::get_height() const {
         return p_font->get_str_size(text).y;
     }
 
-    const std::string& Text::get_text() {
+    const std::string& Text::get_text() const {
         return text;
     }
 
-    const core::Color& Text::get_color() {
+    const core::Color& Text::get_color() const {
         return color;
     }
 

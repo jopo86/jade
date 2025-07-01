@@ -14,6 +14,6 @@ namespace jade::backend {
         Texture();
         Texture(const std::string& filepath);
 
-        void bind();
+        void bind() const;
     };
 }

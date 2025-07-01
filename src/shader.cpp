@@ -87,7 +87,7 @@ namespace jade::backend {
         allocs.progs.push_back(prog);
     }
 
-    void Shader::use() {
+    void Shader::use() const {
         glUseProgram(prog);
     }
 

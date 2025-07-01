@@ -46,7 +46,9 @@ namespace jade::hidden {
     }
 
     void cursor_pos_callback(GLFWwindow* window, double x, double y) {
-        if (context.cbs.on_mouse_moved) context.cbs.on_mouse_moved(x, y);
+        int fb_height;
+        glfwGetFramebufferSize(context.window, nullptr, &fb_height);
+        if (context.cbs.on_mouse_moved) context.cbs.on_mouse_moved(x, fb_height - y);
     }
 
     void scroll_callback(GLFWwindow* window, double x, double y) {
@@ -93,7 +95,7 @@ namespace jade::core {
     #endif
 
         glfwWindowHint(GLFW_RESIZABLE, context.cfg.resizable ? GLFW_TRUE : GLFW_FALSE);
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_SAMPLES, 16);
 
         context.window = glfwCreateWindow(cfg.width, cfg.height, cfg.title.c_str(), nullptr, nullptr);
         if (!context.window) {
@@ -344,8 +346,10 @@ namespace jade::input {
     double get_mouse_y() {
         assert_initialized("jade::input::get_mouse_y()");
         double y;
+        int fb_height;
         glfwGetCursorPos(context.window, nullptr, &y);
-        return y;
+        glfwGetFramebufferSize(context.window, nullptr, &fb_height);
+        return fb_height - y;
     }
 
     void set_cursor_mode(CursorMode mode) {

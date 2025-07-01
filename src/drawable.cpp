@@ -93,27 +93,27 @@ namespace jade::draw {
         update_model();
     }
 
-    float Drawable::get_x() {
+    float Drawable::get_x() const {
         return x;
     }
 
-    float Drawable::get_y() {
+    float Drawable::get_y() const {
         return y;
     }
 
-    float Drawable::get_z() {
+    float Drawable::get_z() const {
         return z;
     }
 
-    float Drawable::get_scale_x() {
+    float Drawable::get_scale_x() const {
         return m_scale_x;
     }
 
-    float Drawable::get_scale_y() {
+    float Drawable::get_scale_y() const {
         return m_scale_y;
     }
 
-    float Drawable::get_rotation() {
+    float Drawable::get_rotation() const {
         return rotation;
     }
 

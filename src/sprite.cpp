@@ -35,18 +35,18 @@ namespace jade::draw {
         mesh = Mesh::quad(init_width, init_height, true, xoff, yoff);
     }
 
-    void Sprite::draw() {
+    void Sprite::draw() const {
         context.sprite_shader.use();
         context.sprite_shader.set_mat4("u_model", model);
         tex.bind();
         mesh.draw();
     }
 
-    float Sprite::width() {
+    float Sprite::width() const {
         return init_width * get_scale_x();
     }
 
-    float Sprite::height() {
+    float Sprite::height() const {
         return init_height * get_scale_y();
     }
 

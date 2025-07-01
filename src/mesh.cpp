@@ -85,7 +85,7 @@ namespace jade::backend {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 
-    void Mesh::draw() {
+    void Mesh::draw() const {
         glBindVertexArray(vao);
         if (indexed) glDrawElements(GL_TRIANGLES, index_ct, GL_UNSIGNED_INT, nullptr);
         else glDrawArrays(GL_TRIANGLES, 0, index_ct);

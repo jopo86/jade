@@ -11,11 +11,11 @@ namespace jade::draw {
         Shape();
         Shape(const backend::Mesh& mesh, float width, float height, const core::Color& color = core::Color::white());
 
-        void draw() override;
+        void draw() const override;
 
-        float width();
-        float height();
-        const core::Color& get_color();
+        float width() const;
+        float height() const;
+        const core::Color& get_color() const;
 
         void scale_to_width(float width, bool maintain_aspect_ratio = true);
         void scale_to_height(float height, bool maintain_aspect_ratio = true);

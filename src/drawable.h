@@ -7,7 +7,7 @@ namespace jade::draw {
     public:
         Drawable();
 
-        virtual void draw() = 0;
+        virtual void draw() const = 0;
 
         void translate(float x_offset, float y_offset, float z_offset = 0.0f);
         void rotate(float degrees);
@@ -26,12 +26,12 @@ namespace jade::draw {
         void set_scale_y(float scale_y);
         void set_rotation(float degrees);
 
-        float get_x();
-        float get_y();
-        float get_z();
-        float get_scale_x();
-        float get_scale_y();
-        float get_rotation();
+        float get_x() const;
+        float get_y() const;
+        float get_z() const;
+        float get_scale_x() const;
+        float get_scale_y() const;
+        float get_rotation() const;
     
         virtual ~Drawable() = default;
 

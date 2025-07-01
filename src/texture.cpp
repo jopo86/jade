@@ -48,7 +48,7 @@ namespace jade::backend {
         allocs.texs.push_back(tex);
     }
 
-    void Texture::bind() {
+    void Texture::bind() const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, tex);
     }

@@ -15,7 +15,7 @@ namespace jade::backend {
         Shader();
         Shader(const std::string& vert_src, const std::string& frag_src);
 
-        void use();
+        void use() const;
 
         void set_vec3(const std::string& name, const glm::vec3& val);
         void set_vec4(const std::string& name, const glm::vec4& val);

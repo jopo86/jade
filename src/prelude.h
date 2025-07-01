@@ -1,3 +1,5 @@
+#pragma once
+
 #include "jade.h"
 #include "sprite.h"
 #include "shape.h"
@@ -15,8 +17,10 @@ using jade::core::Callbacks;
 using jade::core::Color;
 using jade::core::Origin;
 
-using namespace jade::draw;
+using jade::draw::Shape;
+using jade::draw::Sprite;
+using jade::draw::Text;
 
-using namespace jade::input;
-
-using namespace jade::camera;
+using jade::input::Key;
+using jade::input::MouseButton;
+using jade::input::Action;

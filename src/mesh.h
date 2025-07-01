@@ -19,7 +19,7 @@ namespace jade::backend {
         Mesh(GLfloat* vertices, GLsizei vertices_size, MeshFormat fmt);
         Mesh(GLfloat* vertices, GLsizei vertices_size, GLuint* indices, GLsizei indices_size, MeshFormat fmt);
 
-        void draw();
+        void draw() const;
 
         static Mesh triangle(float side_len, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);
         static Mesh triangle(float base, float height, bool tex_coords, float x_offset = 0.0f, float y_offset = 0.0f);

@@ -10,8 +10,6 @@ using jade::internal::context;
 
 namespace jade::backend {
 
-    std::unordered_map<std::string, Font> Font::loaded;
-
     Font::Font() : face(nullptr) {}
 
     Font::Font(const std::string& path, size_t px) {
@@ -50,9 +48,9 @@ namespace jade::backend {
 
             Glyph glyph {
                 tex,
-                face->glyph->bitmap.width, face->glyph->bitmap.rows,
+                (int)face->glyph->bitmap.width, (int)face->glyph->bitmap.rows,
                 face->glyph->bitmap_left, face->glyph->bitmap_top,
-                face->glyph->advance.x >> 6
+                (unsigned int)face->glyph->advance.x >> 6
             };
             glyphs.insert({ c, glyph });
             

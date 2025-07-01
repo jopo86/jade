@@ -11,10 +11,10 @@ namespace jade::draw {
         Sprite();
         Sprite(const std::string& image_path, core::Origin origin = core::Origin::Mid);
 
-        void draw() override;
+        void draw() const override;
 
-        float width();
-        float height();
+        float width() const;
+        float height() const;
         
         void scale_to_width(float width, bool maintain_aspect_ratio = true);
         void scale_to_height(float height, bool maintain_aspect_ratio = true);

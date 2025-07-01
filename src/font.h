@@ -25,7 +25,6 @@ namespace jade::backend {
         glm::ivec2 get_str_size(const std::string& str);
 
         std::unordered_map<char, Glyph> glyphs;
-        static std::unordered_map<std::string, Font> loaded;
 
     private:
         FT_Face face;

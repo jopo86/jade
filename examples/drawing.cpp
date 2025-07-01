@@ -13,7 +13,7 @@ int main()
     Shape hex = Shape::circle(100, 6, Color::blue());
     hex.set_position(550, 375);
 
-    Text text("hello world", "../examples/assets/lato.ttf",  Color::red());
+    Text text("hello world", "../examples/assets/lato.ttf", 96,  Color::red());
     text.set_position(400, 175, 0.1f);
 
     Callbacks cbs;

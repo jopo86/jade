@@ -22,22 +22,22 @@ namespace jade::draw {
         color = col;
     }
 
-    void Shape::draw() {
+    void Shape::draw() const {
         context.shape_shader.use();
         context.shape_shader.set_mat4("u_model", model);
         context.shape_shader.set_color("u_col", color);
         mesh.draw();
     }
 
-    float Shape::width() {
+    float Shape::width() const {
         return init_width * get_scale_x();
     }
 
-    float Shape::height() {
+    float Shape::height() const {
         return init_height * get_scale_y();
     }
 
-    const Color& Shape::get_color() {
+    const Color& Shape::get_color() const {
         return color;
     }
 

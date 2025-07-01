@@ -12,3 +12,5 @@ target_include_directories(jade PUBLIC
 target_link_libraries(jade 
     PRIVATE opengl32 glad glfw freetype
 )
+
+target_compile_options(jade PRIVATE -Wno-delete-incomplete)
