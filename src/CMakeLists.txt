@@ -13,4 +13,6 @@ target_link_libraries(jade
     PRIVATE opengl32 glad glfw freetype
 )
 
-target_compile_options(jade PRIVATE -Wno-delete-incomplete)
+if(!MSVC) 
+    target_compile_options(jade PRIVATE -Wno-delete-incomplete)
+endif()

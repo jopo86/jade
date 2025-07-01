@@ -1,3 +1,5 @@
+#pragma warning(disable: 4244 4081 4305)
+
 #include <vector>
 #include <ctime>
 
@@ -63,9 +65,9 @@ int main() {
             ) {
                 score++;
                 score_text.set_text("Score: " + std::to_string(score));
-                raindrops.erase(it);
+                it = raindrops.erase(it);
             }
-            else if (it->y <= 0) raindrops.erase(it);
+            else if (it->y <= 0) it = raindrops.erase(it);
             else {
                 it->y -= DROP_SPEED * dt;
                 it++;

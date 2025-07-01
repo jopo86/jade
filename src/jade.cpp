@@ -22,7 +22,7 @@ namespace jade::hidden {
 
     void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
-        context.cam.resize(width, height);
+        context.cam.resize((float)width, (float)height);
         context.sprite_shader.use();
         context.sprite_shader.set_mat4("u_proj", context.cam.proj);
         context.shape_shader.use();
@@ -148,7 +148,7 @@ namespace jade::core {
         context.shape_shader = Shader::colored();
         context.text_shader = Shader::text();
 
-        context.cam = Camera(fb_width, fb_height);
+        context.cam = Camera((float)fb_width, (float)fb_height);
         context.sprite_shader.use();
         context.sprite_shader.set_mat4("u_view", context.cam.view);
         context.sprite_shader.set_mat4("u_proj", context.cam.proj);

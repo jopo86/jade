@@ -12,7 +12,7 @@ namespace jade::backend {
 
     Font::Font() : face(nullptr) {}
 
-    Font::Font(const std::string& path, size_t px) {
+    Font::Font(const std::string& path, unsigned int px) {
         assert_initialized("jade::backend::Font::Font()");
 
         if (FT_New_Face(context.ft, path.c_str(), 0, &face)) {

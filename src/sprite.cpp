@@ -18,8 +18,8 @@ namespace jade::draw {
         assert_initialized("jade::draw::Sprite::Sprite()");
         
         tex = Texture(path);
-        init_width = tex.width;
-        init_height = tex.height;
+        init_width = (float)tex.width;
+        init_height = (float)tex.height;
 
         float xoff = 0.0f, yoff = 0.0f;
         if (origin == Origin::BottomLeft || origin == Origin::Left || origin == Origin::TopLeft)

@@ -20,7 +20,7 @@ namespace jade::backend {
     class Font {
     public:
         Font();
-        Font(const std::string& path, size_t px);
+        Font(const std::string& path, unsigned int px);
 
         glm::ivec2 get_str_size(const std::string& str);
 

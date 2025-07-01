@@ -65,9 +65,9 @@ namespace jade::draw {
             Glyph g = p_font->glyphs[c];
 
             float x = g.bearing_x + advance;
-            float y = g.bearing_y - g.height;
-            float w = g.width;
-            float h = g.height;
+            float y = (float)(g.bearing_y - g.height);
+            float w = (float)g.width;
+            float h = (float)g.height;
 
             if (origin == Origin::Bottom || origin == Origin::Mid || origin == Origin::Top)
                 x -= width / 2;
