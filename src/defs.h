@@ -5,7 +5,7 @@
 
 namespace jade::core {
     enum class Origin {
-        Mid,
+        Center,
         BottomLeft,
         Bottom,
         BottomRight,

@@ -29,11 +29,11 @@ namespace jade::draw {
         mesh.draw();
     }
 
-    float Shape::width() const {
+    float Shape::get_width() const {
         return init_width * get_scale_x();
     }
 
-    float Shape::height() const {
+    float Shape::get_height() const {
         return init_height * get_scale_y();
     }
 
@@ -42,13 +42,13 @@ namespace jade::draw {
     }
 
     void Shape::scale_to_width(float w, bool maintain_aspect) {
-        float aspect = width() / height();
+        float aspect = get_width() / get_height();
         set_scale_x(w / init_width);
         if (maintain_aspect) set_scale_y(get_scale_x() / aspect);
     }
 
     void Shape::scale_to_height(float h, bool maintain_aspect) {
-        float aspect = width() / height();
+        float aspect = get_width() / get_height();
         set_scale_y(h / init_height);
         if (maintain_aspect) set_scale_x(get_scale_y() * aspect);
     }
@@ -57,20 +57,20 @@ namespace jade::draw {
         this->color = color;
     }
 
-    Shape Shape::triangle(float s) { return Shape::triangle(s, Color::white(), Origin::Mid); }
-    Shape Shape::triangle(float s, const core::Color& color) { return Shape::triangle(s, color, Origin::Mid); }
+    Shape Shape::triangle(float s) { return Shape::triangle(s, Color::white(), Origin::Center); }
+    Shape Shape::triangle(float s, const core::Color& color) { return Shape::triangle(s, color, Origin::Center); }
     Shape Shape::triangle(float s, core::Origin origin) { return Shape::triangle(s, Color::white(), origin); }
-    Shape Shape::triangle(float b, float h) { return Shape::triangle(b, h, Color::white(), Origin::Mid); }
-    Shape Shape::triangle(float b, float h, const core::Color& color) { return Shape::triangle(b, h, color, Origin::Mid); }
+    Shape Shape::triangle(float b, float h) { return Shape::triangle(b, h, Color::white(), Origin::Center); }
+    Shape Shape::triangle(float b, float h, const core::Color& color) { return Shape::triangle(b, h, color, Origin::Center); }
     Shape Shape::triangle(float b, float h, core::Origin origin) { return Shape::triangle(b, h, Color::white(), origin); }
-    Shape Shape::square(float s) { return Shape::square(s, Color::white(), Origin::Mid); }
-    Shape Shape::square(float s, const core::Color& color) { return Shape::square(s, color, Origin::Mid); }
+    Shape Shape::square(float s) { return Shape::square(s, Color::white(), Origin::Center); }
+    Shape Shape::square(float s, const core::Color& color) { return Shape::square(s, color, Origin::Center); }
     Shape Shape::square(float s, core::Origin origin) { return Shape::square(s, Color::white(), origin); }
-    Shape Shape::rect(float w, float h) { return Shape::rect(w, h, Color::white(), Origin::Mid); }
-    Shape Shape::rect(float w, float h, const core::Color& color) { return Shape::rect(w, h, color, Origin::Mid); }
+    Shape Shape::rect(float w, float h) { return Shape::rect(w, h, Color::white(), Origin::Center); }
+    Shape Shape::rect(float w, float h, const core::Color& color) { return Shape::rect(w, h, color, Origin::Center); }
     Shape Shape::rect(float w, float h, core::Origin origin) { return Shape::rect(w, h, Color::white(), origin); }
-    Shape Shape::circle(float r, int n) { return Shape::circle(r, n, Color::white(), Origin::Mid); }
-    Shape Shape::circle(float r, int n, const core::Color& color) { return Shape::circle(r, n, color, Origin::Mid); }
+    Shape Shape::circle(float r, int n) { return Shape::circle(r, n, Color::white(), Origin::Center); }
+    Shape Shape::circle(float r, int n, const core::Color& color) { return Shape::circle(r, n, color, Origin::Center); }
     Shape Shape::circle(float r, int n, core::Origin origin) { return Shape::circle(r, n, Color::white(), origin); }
 
     Shape Shape::triangle(float s, const Color& col, Origin og) {

@@ -16,10 +16,10 @@ namespace jade::draw {
     Text::Text() : p_font(nullptr) {}
 
     Text::Text(const std::string& text, const std::string& font_path, int font_size) 
-        : Text(text, font_path, font_size, Color::white(), Origin::Mid) {}
+        : Text(text, font_path, font_size, Color::white(), Origin::Center) {}
 
     Text::Text(const std::string& text, const std::string& font_path, int font_size, const core::Color& color) 
-        : Text(text, font_path, font_size, color, Origin::Mid) {}
+        : Text(text, font_path, font_size, color, Origin::Center) {}
 
     Text::Text(const std::string& text, const std::string& font_path, int font_size, core::Origin origin) 
         : Text(text, font_path, font_size, Color::white(), origin) {}
@@ -35,6 +35,9 @@ namespace jade::draw {
             loaded_fonts.insert({ { font_path, font_size }, Font(font_path, font_size) });
         }
         p_font = &loaded_fonts[{ font_path, font_size }];
+
+        init_width = (float)get_width();
+        init_height = (float)get_height();
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
@@ -69,12 +72,12 @@ namespace jade::draw {
             float w = (float)g.width;
             float h = (float)g.height;
 
-            if (origin == Origin::Bottom || origin == Origin::Mid || origin == Origin::Top)
+            if (origin == Origin::Bottom || origin == Origin::Center || origin == Origin::Top)
                 x -= width / 2;
             else if (origin == Origin::BottomRight || origin == Origin::Right || origin == Origin::TopRight)
                 x -= width;
             
-            if (origin == Origin::Left || origin == Origin::Mid || origin == Origin::Right)
+            if (origin == Origin::Left || origin == Origin::Center || origin == Origin::Right)
                 y -= height / 2;
             else if (origin == Origin::TopLeft || origin == Origin::Top || origin == Origin::TopRight)
                 y -= height;
@@ -129,4 +132,15 @@ namespace jade::draw {
         return color;
     }
 
+    void Text::scale_to_width(float w, bool maintain_aspect) {
+        float aspect = get_width() / get_height();
+        set_scale_x(w / init_width);
+        if (maintain_aspect) set_scale_y(get_scale_x() / aspect);
+    }
+
+    void Text::scale_to_height(float h, bool maintain_aspect) {
+        float aspect = get_width() / get_height();
+        set_scale_y(h / init_height);
+        if (maintain_aspect) set_scale_x(get_scale_y() * aspect);
+    }
 }

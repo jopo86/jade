@@ -42,22 +42,22 @@ namespace jade::draw {
         mesh.draw();
     }
 
-    float Sprite::width() const {
+    float Sprite::get_width() const {
         return init_width * get_scale_x();
     }
 
-    float Sprite::height() const {
+    float Sprite::get_height() const {
         return init_height * get_scale_y();
     }
 
     void Sprite::scale_to_width(float w, bool maintain_aspect) {
-        float aspect = width() / height();
+        float aspect = get_width() / get_height();
         set_scale_x(w / init_width);
         if (maintain_aspect) set_scale_y(get_scale_x() / aspect);
     }
 
     void Sprite::scale_to_height(float h, bool maintain_aspect) {
-        float aspect = width() / height();
+        float aspect = get_width() / get_height();
         set_scale_y(h / init_height);
         if (maintain_aspect) set_scale_x(get_scale_y() * aspect);
     }

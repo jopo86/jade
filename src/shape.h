@@ -11,13 +11,23 @@ namespace jade::draw {
         Shape();
         Shape(const backend::Mesh& mesh, float width, float height, const core::Color& color = core::Color::white());
 
+        /*
+            @brief Renders the shape to the window.
+         !  This should only be called inside the `on_draw` callback.
+        */
         void draw() const override;
 
-        float width() const;
-        float height() const;
+        // @return The calculated width of the shape, based on its original width and current scale.
+        float get_width() const;
+        // @return The calculated height of the shape, based on its original height and current scale.
+        float get_height() const;
         const core::Color& get_color() const;
 
+        // @brief Changes the scale of the shape so that its width matches the specified value.
+        // @param `maintain_aspect_ratio` whether the height will be scaled proportionally.
         void scale_to_width(float width, bool maintain_aspect_ratio = true);
+        // @brief Changes the scale of the shape so that its height matches the specified value.
+        // @param `maintain_aspect_ratio` whether the width will be scaled proportionally.
         void scale_to_height(float height, bool maintain_aspect_ratio = true);
         void set_color(const core::Color& color);
 

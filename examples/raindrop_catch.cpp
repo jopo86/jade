@@ -58,10 +58,10 @@ int main() {
         for (auto it = raindrops.begin(); it != raindrops.end();) {
             if (
                 // the collision math here is a little wacky because of the different origins
-                it->x + raindrop.width() / 2 >= bucket.get_x() - bucket.width() / 2 &&
-                it->x - raindrop.width() / 2 <= bucket.get_x() + bucket.width() / 2 &&
-                it->y - raindrop.height() <= bucket.get_y() + bucket.height() * 0.85 &&
-                it->y >= bucket.get_y() + bucket.height() * 0.8
+                it->x + raindrop.get_width() / 2 >= bucket.get_x() - bucket.get_width() / 2 &&
+                it->x - raindrop.get_width() / 2 <= bucket.get_x() + bucket.get_width() / 2 &&
+                it->y - raindrop.get_height() <= bucket.get_y() + bucket.get_height() * 0.85 &&
+                it->y >= bucket.get_y() + bucket.get_height() * 0.8
             ) {
                 score++;
                 score_text.set_text("Score: " + std::to_string(score));

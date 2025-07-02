@@ -1,4 +1,4 @@
-set(EXAMPLES bare_minimum config drawing input raindrop_catch)
+set(EXAMPLES bare_minimum config drawing colors input raindrop_catch)
 
 foreach(example ${EXAMPLES})
     add_executable(${example} ${example}.cpp)
