@@ -1,6 +1,6 @@
 #pragma warning(disable: 4244 4081 4305)
 
-#include <vector>
+#include <list>
 #include <ctime>
 
 #include "../src/prelude.h"
@@ -41,7 +41,7 @@ int main() {
     Text score_text("Score: 0", "../examples/assets/lato.ttf", 48, Origin::TopLeft);
     score_text.set_position(20, 1024 - 20);
 
-    std::vector<Pos> raindrops;
+    std::list<Pos> raindrops;
 
     int score = 0;
     float spawn_interval = 1.0f; // raindrops spawn every 1 second 
