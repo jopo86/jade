@@ -16,7 +16,6 @@ namespace jade::draw {
 
     Sprite::Sprite(const std::string& path, Origin origin) {
         assert_initialized("jade::draw::Sprite::Sprite()");
-        
         tex = Texture(path);
         init_width = (float)tex.width;
         init_height = (float)tex.height;

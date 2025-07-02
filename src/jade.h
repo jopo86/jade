@@ -12,6 +12,11 @@
 #include <GLFW/glfw3.h>
 
 namespace jade {
+
+    constexpr int VERSION_MAJOR = 0;
+    constexpr int VERSION_MINOR = 1;
+    constexpr int VERSION_PATCH = 0;
+
     namespace core {
 
         // @brief Configuration for the Jade engine.
