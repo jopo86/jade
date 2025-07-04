@@ -1,6 +1,5 @@
-#include "sprite.h"
-
-#include "internal.h"
+#include <jade/sprite.h>
+#include <jade/internal.h>
 
 namespace jade::hidden {
     void assert_initialized(const std::string&);
@@ -11,7 +10,7 @@ using jade::backend::Mesh, jade::backend::Texture;
 using jade::internal::context;
 
 namespace jade::draw {
-    
+
     Sprite::Sprite() {}
 
     Sprite::Sprite(const std::string& path, Origin origin) {

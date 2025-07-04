@@ -1,5 +1,5 @@
-#include "font.h"
-#include "internal.h"
+#include <jade/font.h>
+#include <jade/internal.h>
 
 namespace jade::hidden {
     void err(const std::string&);

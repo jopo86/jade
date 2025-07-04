@@ -1,4 +1,4 @@
-#include "../src/prelude.h"
+#include <jade/prelude.h>
 
 int main() {
     jade::init();

@@ -1,5 +1,5 @@
-#include "shader.h"
-#include "internal.h"
+#include <jade/shader.h>
+#include <jade/internal.h>
 
 #include <glm/gtc/type_ptr.hpp>
 

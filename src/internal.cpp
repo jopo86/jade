@@ -1,4 +1,4 @@
-#include "internal.h"
+#include <jade/internal.h>
 
 namespace jade::internal {
     void Allocs::free() {

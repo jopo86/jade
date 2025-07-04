@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "jade.h"
-#include "internal.h"
+#include <jade/jade.h>
+#include <jade/internal.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 

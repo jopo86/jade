@@ -1,4 +1,4 @@
-#include "camera.h"
+#include <jade/camera.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 

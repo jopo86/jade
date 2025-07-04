@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_set>
 
-#include "../src/prelude.h"
+#include <jade/prelude.h>
 
 using namespace jade::input;
 

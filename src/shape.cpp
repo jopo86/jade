@@ -1,5 +1,5 @@
-#include "shape.h"
-#include "internal.h"
+#include <jade/shape.h>
+#include <jade/internal.h>
 
 namespace jade::hidden {
     void assert_initialized(const std::string&);

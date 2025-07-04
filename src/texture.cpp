@@ -1,5 +1,5 @@
-#include "texture.h"
-#include "internal.h"
+#include <jade/texture.h>
+#include <jade/internal.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

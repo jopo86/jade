@@ -1,5 +1,5 @@
-#include "mesh.h"
-#include "internal.h"
+#include <jade/mesh.h>
+#include <jade/internal.h>
 
 #include <iostream>
 

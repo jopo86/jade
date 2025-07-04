@@ -1,4 +1,4 @@
-#include "drawable.h"
+#include <jade/drawable.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 

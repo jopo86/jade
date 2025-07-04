@@ -3,7 +3,7 @@
 #include <list>
 #include <ctime>
 
-#include "../src/prelude.h"
+#include <jade/prelude.h>
 
 using jade::input::is_key_down;
 

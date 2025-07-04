@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "../src/prelude.h"
+#include <jade/prelude.h>
 
 int main()
 {

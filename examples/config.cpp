@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "../src/prelude.h"
+#include <jade/prelude.h>
 
 using namespace jade::core;
 
